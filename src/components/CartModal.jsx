@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-function CartModal({ cart, setCart, onClose }) {
+function CartModal({ cart, setCart, onClose, onConfirmOrder }) {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false)
   const totalPrice = cart.reduce((sum, item) => sum + (Number(item.price) || 0), 0)
 
@@ -16,6 +16,7 @@ function CartModal({ cart, setCart, onClose }) {
   const closeConfirm = () => setIsConfirmOpen(false)
 
   const confirmOrder = () => {
+    onConfirmOrder?.(cart, totalPrice)
     setCart([])
     closeConfirm()
     onClose()
