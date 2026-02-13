@@ -57,6 +57,37 @@
   height: 22px;
 }
 
+.profileFabImage {
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  object-fit: cover;
+  display: block;
+}
+
+.loadingSpinner {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  border: 3px solid rgba(15, 23, 42, 0.16);
+  border-top-color: rgb(2, 132, 199);
+  animation: spinnerRotate 800ms linear infinite;
+}
+
+@keyframes spinnerRotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.authCallbackFull {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .profilePage {
   max-width: 340px;
   margin: 0 auto;
@@ -329,6 +360,41 @@
   max-width: 340px;
   margin: 0 auto;
   justify-items: center;
+}
+
+.menuStatus {
+  width: 100%;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 800;
+  color: rgba(15, 23, 42, 0.72);
+  padding: 10px 0;
+}
+
+.menuRetryButton {
+  margin-top: 10px;
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.menuLoadMoreStatus {
+  width: 100%;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 800;
+  color: rgba(15, 23, 42, 0.72);
+  padding: 6px 0 10px;
+}
+
+.menuLoadMoreSentinel {
+  width: 100%;
+  height: 1px;
 }
 
 .menuCard {
