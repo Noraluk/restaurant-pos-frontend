@@ -9,7 +9,7 @@ import LineConnectCallbackPage from './pages/LineConnectCallbackPage.jsx'
 import UnauthorizedPage from './pages/UnauthorizedPage.jsx'
 import UserProfilePage from './pages/UserProfilePage.jsx'
 import { ACCESS_TOKEN_STORAGE_KEY } from './api/http.js'
-import { ORDER_HISTORY_STORAGE_KEY, USER_NAME_STORAGE_KEY, USER_PICTURE_STORAGE_KEY } from './shared/constants.js'
+import { USER_NAME_STORAGE_KEY, USER_PICTURE_STORAGE_KEY } from './shared/constants.js'
 import { readStorage, writeStorage } from './shared/storage.js'
 
 function AppLayout() {
@@ -21,26 +21,9 @@ function AppLayout() {
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [userName, setUserName] = useState(() => readStorage(USER_NAME_STORAGE_KEY, 'ผู้ใช้'))
   const [userPictureUrl, setUserPictureUrl] = useState(() => readStorage(USER_PICTURE_STORAGE_KEY, ''))
-  const [orderHistory, setOrderHistory] = useState(() => readStorage(ORDER_HISTORY_STORAGE_KEY, []))
 
   const addToCart = (item) => {
     setCart((prev) => [...prev, item])
-  }
-
-  const addOrderToHistory = (items, totalPrice) => {
-    const safeItems = items.map((item) => ({
-      id: item.id,
-      name: item.name,
-      price: item.price,
-      type: item.type,
-    }))
-    const order = {
-      id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
-      createdAt: Date.now(),
-      totalPrice,
-      items: safeItems,
-    }
-    setOrderHistory((prev) => [order, ...prev])
   }
 
   const openCart = useCallback(() => setIsCartOpen(true), [])
@@ -53,10 +36,6 @@ function AppLayout() {
   useEffect(() => {
     writeStorage(USER_PICTURE_STORAGE_KEY, userPictureUrl)
   }, [userPictureUrl])
-
-  useEffect(() => {
-    writeStorage(ORDER_HISTORY_STORAGE_KEY, orderHistory)
-  }, [orderHistory])
 
   useEffect(() => {
     if (!isCartOpen || !isMenuPage) return
@@ -114,7 +93,6 @@ function AppLayout() {
               addToCart,
               userName,
               setUserName,
-              orderHistory,
             }}
           />
         </div>
@@ -165,7 +143,6 @@ function AppLayout() {
             addToCart,
             userName,
             setUserName,
-            orderHistory,
           }}
         />
       </div>
@@ -193,7 +170,7 @@ function AppLayout() {
                   cart={cart}
                   setCart={setCart}
                   onClose={closeCart}
-                  onConfirmOrder={addOrderToHistory}
+                  onConfirmOrder={() => void 0}
                 />
               </div>
             </div>

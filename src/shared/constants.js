@@ -2,4 +2,3 @@ export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localho
 
 export const USER_NAME_STORAGE_KEY = 'restaurant_pos:userName'
 export const USER_PICTURE_STORAGE_KEY = 'restaurant_pos:pictureUrl'
-export const ORDER_HISTORY_STORAGE_KEY = 'restaurant_pos:orderHistory'
