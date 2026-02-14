@@ -2,10 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { ACCESS_TOKEN_STORAGE_KEY, getJson, joinUrl } from '../api/http.js'
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8081'
-const USER_NAME_STORAGE_KEY = 'restaurant_pos:userName'
-const USER_PICTURE_STORAGE_KEY = 'restaurant_pos:pictureUrl'
+import { API_BASE_URL, USER_NAME_STORAGE_KEY, USER_PICTURE_STORAGE_KEY } from '../shared/constants.js'
 
 function LineConnectCallbackPage() {
   const navigate = useNavigate()

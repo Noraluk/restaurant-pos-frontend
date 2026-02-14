@@ -1,6 +1,5 @@
 import { getJson, joinUrl } from './http.js'
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8081'
+import { API_BASE_URL } from '../shared/constants.js'
 
 export const fetchMenus = async ({ page = 1, limit = 20, signal } = {}) => {
   const url = new URL(joinUrl(API_BASE_URL, '/menus'))
@@ -8,4 +7,3 @@ export const fetchMenus = async ({ page = 1, limit = 20, signal } = {}) => {
   url.searchParams.set('limit', String(limit))
   return getJson(url.toString(), { signal })
 }
-

@@ -9,28 +9,8 @@ import LineConnectCallbackPage from './pages/LineConnectCallbackPage.jsx'
 import UnauthorizedPage from './pages/UnauthorizedPage.jsx'
 import UserProfilePage from './pages/UserProfilePage.jsx'
 import { ACCESS_TOKEN_STORAGE_KEY } from './api/http.js'
-
-const USER_NAME_STORAGE_KEY = 'restaurant_pos:userName'
-const USER_PICTURE_STORAGE_KEY = 'restaurant_pos:pictureUrl'
-const ORDER_HISTORY_STORAGE_KEY = 'restaurant_pos:orderHistory'
-
-const readStorage = (key, fallbackValue) => {
-  try {
-    const raw = window.localStorage.getItem(key)
-    if (!raw) return fallbackValue
-    return JSON.parse(raw)
-  } catch {
-    return fallbackValue
-  }
-}
-
-const writeStorage = (key, value) => {
-  try {
-    window.localStorage.setItem(key, JSON.stringify(value))
-  } catch {
-    return
-  }
-}
+import { ORDER_HISTORY_STORAGE_KEY, USER_NAME_STORAGE_KEY, USER_PICTURE_STORAGE_KEY } from './shared/constants.js'
+import { readStorage, writeStorage } from './shared/storage.js'
 
 function AppLayout() {
   const navigate = useNavigate()
