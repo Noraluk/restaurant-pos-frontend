@@ -9,6 +9,7 @@ import LineConnectCallbackPage from './pages/LineConnectCallbackPage.jsx'
 import UnauthorizedPage from './pages/UnauthorizedPage.jsx'
 import UserProfilePage from './pages/UserProfilePage.jsx'
 import { ACCESS_TOKEN_STORAGE_KEY } from './api/http.js'
+import { createOrder } from './api/orders.js'
 import { USER_NAME_STORAGE_KEY, USER_PICTURE_STORAGE_KEY } from './shared/constants.js'
 import { readStorage, writeStorage } from './shared/storage.js'
 
@@ -28,6 +29,27 @@ function AppLayout() {
 
   const openCart = useCallback(() => setIsCartOpen(true), [])
   const closeCart = useCallback(() => setIsCartOpen(false), [])
+
+  const confirmOrder = useCallback(
+    async (items) => {
+      const countsById = new Map()
+      for (const item of Array.isArray(items) ? items : []) {
+        const key = item?.id
+        if (!key) continue
+        countsById.set(key, (countsById.get(key) || 0) + 1)
+      }
+      const payloadItems = Array.from(countsById.entries()).map(([menuItemId, quantity]) => ({
+        menuItemId,
+        quantity,
+      }))
+      const body = {
+        customerName: userName || 'ผู้ใช้',
+        items: payloadItems,
+      }
+      await createOrder(body)
+    },
+    [userName]
+  )
 
   useEffect(() => {
     writeStorage(USER_NAME_STORAGE_KEY, userName)
@@ -170,7 +192,7 @@ function AppLayout() {
                   cart={cart}
                   setCart={setCart}
                   onClose={closeCart}
-                  onConfirmOrder={() => void 0}
+                  onConfirmOrder={confirmOrder}
                 />
               </div>
             </div>

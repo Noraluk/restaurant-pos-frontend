@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 
 function CartModal({ cart, setCart, onClose, onConfirmOrder }) {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState('')
   const totalPrice = cart.reduce((sum, item) => sum + (Number(item.price) || 0), 0)
 
   const removeAtIndex = (index) => {
@@ -12,14 +14,26 @@ function CartModal({ cart, setCart, onClose, onConfirmOrder }) {
     setCart([])
   }
 
-  const openConfirm = () => setIsConfirmOpen(true)
+  const openConfirm = () => {
+    setSubmitError('')
+    setIsConfirmOpen(true)
+  }
   const closeConfirm = () => setIsConfirmOpen(false)
 
-  const confirmOrder = () => {
-    onConfirmOrder?.(cart, totalPrice)
-    setCart([])
-    closeConfirm()
-    onClose()
+  const confirmOrder = async () => {
+    if (isSubmitting) return
+    setIsSubmitting(true)
+    setSubmitError('')
+    try {
+      await onConfirmOrder?.(cart, totalPrice)
+      setCart([])
+      closeConfirm()
+      onClose()
+    } catch {
+      setSubmitError('ยืนยันออเดอร์ไม่สำเร็จ')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   useEffect(() => {
@@ -103,7 +117,13 @@ function CartModal({ cart, setCart, onClose, onConfirmOrder }) {
       )}
 
       {isConfirmOpen && (
-        <div className="confirmOverlay" role="presentation" onClick={closeConfirm}>
+        <div
+          className="confirmOverlay"
+          role="presentation"
+          onClick={() => {
+            if (!isSubmitting) closeConfirm()
+          }}
+        >
           <div
             className="confirmDialog"
             role="dialog"
@@ -113,11 +133,12 @@ function CartModal({ cart, setCart, onClose, onConfirmOrder }) {
             <div className="confirmTitle">ยืนยันรายการ</div>
             <div className="confirmMessage">รวมทั้งหมด ฿{totalPrice}</div>
             <div className="confirmMessage">ต้องการยืนยันหรือไม่</div>
+            {submitError ? <div className="confirmMessage">{submitError}</div> : null}
             <div className="confirmButtons">
-              <button type="button" className="confirmSecondary" onClick={closeConfirm}>
+              <button type="button" className="confirmSecondary" onClick={closeConfirm} disabled={isSubmitting}>
                 ยกเลิก
               </button>
-              <button type="button" className="confirmPrimary" onClick={confirmOrder}>
+              <button type="button" className="confirmPrimary" onClick={confirmOrder} disabled={isSubmitting}>
                 ยืนยัน
               </button>
             </div>

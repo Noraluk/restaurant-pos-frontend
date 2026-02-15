@@ -1,12 +1,13 @@
 import topImage from '../assets/order.png'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useOutletContext } from 'react-router-dom'
+import { useLocation, useOutletContext } from 'react-router-dom'
 
 import { fetchMenus } from '../api/menus.js'
 
 const DEFAULT_LIMIT = 10
 
 function MenuPage() {
+  const location = useLocation()
   const { addToCart, cart } = useOutletContext()
   const [selectedCategory, setSelectedCategory] = useState('ทั้งหมด')
   const [menuItems, setMenuItems] = useState([])
@@ -19,8 +20,21 @@ function MenuPage() {
   const [retryKey, setRetryKey] = useState(0)
   const menuScrollRef = useRef(null)
   const loadMoreRef = useRef(null)
+  const lastLocationKeyRef = useRef(location.key)
 
   const hasMore = totalPages != null && page < totalPages
+
+  useEffect(() => {
+    if (lastLocationKeyRef.current === location.key) return
+    lastLocationKeyRef.current = location.key
+    setSelectedCategory('ทั้งหมด')
+    setMenuItems([])
+    setTotalPages(null)
+    setInitialError('')
+    setLoadMoreError('')
+    setPage(1)
+    setRetryKey((prev) => prev + 1)
+  }, [location.key])
 
   useEffect(() => {
     const controller = new AbortController()
@@ -50,7 +64,7 @@ function MenuPage() {
           return Array.from(byId.values())
         })
       } catch (err) {
-        if (err?.name === 'AbortError') {
+        if (err?.name === 'AbortError' || err?.code === 'ERR_CANCELED' || err?.name === 'CanceledError') {
           wasAborted = true
           return
         }

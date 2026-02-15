@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useOutletContext } from 'react-router-dom'
 
-import { getJson, joinUrl } from '../api/http.js'
-import { API_BASE_URL } from '../shared/constants.js'
+import { getOrderHistory } from '../api/orders.js'
 
 function UserProfilePage() {
   const navigate = useNavigate()
@@ -32,10 +31,7 @@ function UserProfilePage() {
           setIsLoadingMore(true)
           setLoadMoreError('')
         }
-        const url = new URL(joinUrl(API_BASE_URL, '/order-history'))
-        url.searchParams.set('page', String(page))
-        url.searchParams.set('limit', '10')
-        const data = await getJson(url.toString(), { signal: controller.signal })
+        const data = await getOrderHistory({ page, limit: 10, signal: controller.signal })
         const items = Array.isArray(data?.items) ? data.items : []
         const rawTotalPages = Number(data?.totalPages)
         const nextTotalPages = Number.isFinite(rawTotalPages)
